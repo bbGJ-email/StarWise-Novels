@@ -1,0 +1,39 @@
+.app-layout {
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  background: #001529;
+}
+
+.logo {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  margin-right: 48px;
+}
+
+.header-menu {
+  flex: 1;
+  min-width: 0;
+}
+
+.header-user {
+  color: white;
+  margin-left: auto;
+}
+
+.app-content {
+  padding: 24px 48px;
+  background: #f0f2f5;
+  min-height: calc(100vh - 64px - 48px);
+}
+
+.app-footer {
+  text-align: center;
+  background: #001529;
+  color: white;
+}

@@ -1,0 +1,56 @@
+# StarWise Literature Docker Compose Configuration
+# One-click deployment for the entire application stack
+
+services:
+  # Backend API service
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: starwise-server
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=file:./dev.db
+    volumes:
+      - server-data:/app
+    networks:
+      - starwise-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Frontend SPA service with nginx
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: starwise-client
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      server:
+        condition: service_healthy
+    networks:
+      - starwise-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+networks:
+  starwise-network:
+    driver: bridge
+
+volumes:
+  server-data:
+    driver: local
